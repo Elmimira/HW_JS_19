@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title>Інтернет-магазин</title>
+</head>
+
+<body>
+    <div class="container">
+        <div id="categories">
+            <h2>Категорії</h2>
+            <ul class="categories__list">
+                <li onclick="showProducts('electronics')">Електроніка</li>
+                <li onclick="showProducts('clothing')">Одяг</li>
+                <li onclick="showProducts('books')">Книги</li>
+            </ul>
+        </div>
+
+        <div id="products">
+            <h2>Товари</h2>
+            <ul id="product-list" class="products__list">
+                <!-- Тут буде відображатися список товарів -->
+            </ul>
+        </div>
+
+        <div id="product-info">
+            <h2>Інформація про товар</h2>
+            <div id="product-details">
+                <!-- Тут буде відображатися інформація про обраний товар -->
+            </div>
+            <button onclick="buyProduct()">Купити</button>
+
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+
+</html>
