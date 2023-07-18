@@ -1,9 +1,10 @@
+var selectedProduct = null; // Зберігає обраний товар
+
 // Функція для відображення товарів вибраної категорії
 function showProducts(category) {
     var productList = document.getElementById("product-list");
     productList.innerHTML = ""; // Очищення списку товарів
 
-    // Замість цього блоку коду потрібно підключити до бази даних, отримати список товарів з вибраною категорією
     var products = getProductsByCategory(category);
 
     // Додавання товарів до списку
@@ -12,40 +13,115 @@ function showProducts(category) {
         li.innerHTML = products[i].name;
         li.onclick = function () {
             showProductDetails(this.innerHTML);
+            updateSelectedCategory(this.id);
         };
         productList.appendChild(li);
     }
 
     // Очищення інформації про товар
     document.getElementById("product-details").innerHTML = "";
+    selectedProduct = null;
+    hideBuyButton();
 }
 
 // Функція для відображення інформації про обраний товар
 function showProductDetails(productName) {
     var productDetails = document.getElementById("product-details");
 
-    // Замість цього блоку коду потрібно підключити до бази даних, отримати інформацію про товар за назвою
     var product = getProductByName(productName);
 
     // Відображення інформації про товар
     productDetails.innerHTML =
         "<h3>" + product.name + "</h3><p>" + product.description + "</p>";
+
+    // Зберігання обраного товару
+    selectedProduct = product;
+
+    showBuyButton();
 }
 
-// Функція для купівлі товару
-function buyProduct() {
-    // Замість цього блоку коду потрібно реалізувати логіку купівлі товару, наприклад, відправити запит на сервер
-    alert("Товар куплено!");
-
-    // Повернення до вихідного стану програми
-    var productList = document.getElementById("product-list");
-    productList.innerHTML = "";
-    document.getElementById("product-details").innerHTML = "";
+// Функція для відображення кнопки "Купити"
+function showBuyButton() {
+    var buyButton = document.getElementById("buy-button");
+    buyButton.style.display = "block";
 }
 
-// Приклади функцій отримання списку товарів за категорією та отримання інформації про товар за назвою
+// Функція для сховування кнопки "Купити"
+function hideBuyButton() {
+    var buyButton = document.getElementById("buy-button");
+    buyButton.style.display = "none";
+}
+
+// Функція для оновлення вибраної категорії
+function updateSelectedCategory(categoryId) {
+    var categories = document.getElementsByTagName("li");
+    for (var i = 0; i < categories.length; i++) {
+        if (categories[i].id === categoryId) {
+            categories[i].classList.add("selected");
+        } else {
+            categories[i].classList.remove("selected");
+        }
+    }
+}
+
+// Функція для відкриття модального вікна форми оформлення замовлення
+function openOrderForm() {
+    var modal = document.getElementById("order-modal");
+    modal.style.display = "block";
+}
+
+// Функція для закриття модального вікна форми оформлення замовлення
+function closeOrderForm() {
+    var modal = document.getElementById("order-modal");
+    modal.style.display = "none";
+}
+
+// Функція для перевірки даних користувача при підтвердженні замовлення
+function submitOrder(event) {
+    event.preventDefault();
+    var form = document.getElementById("order-form");
+    var name = form.name.value;
+    var city = form.city.value;
+    var delivery = form.delivery.value;
+    var payment = form.payment.value;
+    var quantity = form.quantity.value;
+
+    // Перевірка на обов'язкові поля
+    var errorMessage = document.getElementById("error-message");
+    if (!name || !city || !delivery || !payment || !quantity) {
+        errorMessage.innerText = "Будь ласка, заповніть всі обов'язкові поля.";
+        return;
+    }
+
+    // Виведення інформації про замовлення на сторінку
+    var orderDetails = document.getElementById("order-details");
+    var orderInfo =
+        "<h2>Інформація про замовлення</h2>" +
+        "<p><b>Товар:</b> " +
+        selectedProduct.name +
+        "</p>" +
+        "<p><b>Кількість:</b> " +
+        quantity +
+        "</p>" +
+        "<p><b>ПІБ покупця:</b> " +
+        name +
+        "</p>" +
+        "<p><b>Місто:</b> " +
+        city +
+        "</p>" +
+        "<p><b>Склад Нової пошти:</b> " +
+        delivery +
+        "</p>" +
+        "<p><b>Спосіб оплати:</b> " +
+        payment +
+        "</p>";
+    orderDetails.innerHTML = orderInfo;
+
+    // Закриття модального вікна
+    closeOrderForm();
+}
+
 function getProductsByCategory(category) {
-    // Замість цього блоку коду потрібно підключити до бази даних та отримати список товарів з вибраною категорією
     if (category === "electronics") {
         return [
             { name: "Смартфон", description: "Дуже крутий смартфон" },
@@ -65,7 +141,6 @@ function getProductsByCategory(category) {
 }
 
 function getProductByName(productName) {
-    // Замість цього блоку коду потрібно підключити до бази даних та отримати інформацію про товар за назвою
     if (productName === "Смартфон") {
         return { name: "Смартфон", description: "Дуже крутий смартфон" };
     } else if (productName === "Ноутбук") {
@@ -82,21 +157,4 @@ function getProductByName(productName) {
     } else if (productName === "Детектив") {
         return { name: "Детектив", description: "Напружений детектив" };
     }
-}
-
-let elements = document.querySelectorAll("li");
-for (let i = 0; i < elements.length; i++) {
-    /*прокручиваем в цикле все элементы*/
-    elements[i].addEventListener("click", function () {
-        /*при клике на элемент
-         */
-        for (let i = 0; i < elements.length; i++) {
-            elements[i].classList.remove("active");
-
-            /*удаляем у всех class active*/
-        }
-        this.classList.add(
-            "active"
-        ); /*добавляем class active по которому кликнули */
-    });
 }
